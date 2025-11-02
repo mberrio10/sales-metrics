@@ -1,0 +1,10 @@
+<nav class="navbar">
+  <a href="/" class="<%= (currentPath === '/' ? 'active' : '') %>">Home</a>
+
+  <% if (session && session.userId) { %>
+    <a href="/dashboard" class="<%= (currentPath === '/dashboard' ? 'active' : '') %>">Dashboard</a>
+    <a href="/logout">Logout</a>
+  <% } else { %>
+    <a href="/login" class="<%= (currentPath === '/login' ? 'active' : '') %>">Login</a>
+  <% } %>
+</nav>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dashboard</title></head>
+<body>
+<h1>Welcome, <%= username %></h1>
+
+  <div class="dashboard-grid">
+
+    <!-- Total Profit -->
+    <div class="card">
+      <h2>Total Profit</h2>
+      <p class="big-number">$<%= totalProfit %></p>
+    </div>
+
+    <!-- Profit per Agent -->
+    <div class="card">
+      <h3>Profit per Agent</h3>
+      <ul>
+        <%
+          const totalAgentProfit = profitPerAgent.reduce((sum, a) => sum + a.totalProfit, 0);
+          const maxAgentProfit = Math.max(...profitPerAgent.map(a => a.totalProfit));
+          const minAgentProfit = Math.min(...profitPerAgent.map(a => a.totalProfit));
+        %>
+        <% profitPerAgent.forEach(agent => {
+          const percent = ((agent.totalProfit / totalAgentProfit) * 100).toFixed(1);
+          const cls = agent.totalProfit === maxAgentProfit 
+            ? "highlight-high" 
+            : agent.totalProfit === minAgentProfit 
+              ? "highlight-low" 
+              : "";
+        %>
+          <li class="<%= cls %>">
+            <strong><%= agent._id %></strong>: $<%= agent.totalProfit %>
+            <span class="badge"><%= percent %>%</span>
+          </li>
+        <% }) %>
+        <li class="summary">Total: $<%= totalAgentProfit %></li>
+      </ul>
+    </div>
+
+    <!-- Profit per Role -->
+    <div class="card">
+      <h3>Profit per Role</h3>
+      <ul>
+        <%
+          const totalRoleProfit = profitPerRole.reduce((sum, r) => sum + r.totalProfit, 0);
+          const maxRoleProfit = Math.max(...profitPerRole.map(a => a.totalProfit));
+          const minRoleProfit = Math.min(...profitPerRole.map(a => a.totalProfit));
+        %>
+        <% profitPerRole.forEach(role => {
+          const percent = ((role.totalProfit / totalRoleProfit) * 100).toFixed(1);
+          const cls = role.totalProfit === maxRoleProfit 
+            ? "highlight-high" 
+            : role.totalProfit === minRoleProfit
+              ? "highlight-low" 
+              : "";
+        %>
+          <li class="<%= cls %>">
+            <strong><%= role._id %></strong>: $<%= role.totalProfit %>
+            <span class="badge"><%= percent %>%</span>
+          </li>
+        <% }) %>
+        <li class="summary">Total: $<%= totalRoleProfit %></li>
+      </ul>
+    </div>
+
+    <!-- Profit by Outreach Method -->
+    <div class="card">
+      <h3>Profit by Outreach Method</h3>
+      <ul>
+        <%
+          const totalOutreachProfit = profitByOutreach.reduce((sum, m) => sum + m.totalProfit, 0);
+          const maxByOutreach = Math.max(...profitByOutreach.map(a => a.totalProfit));
+          const minByOutreach = Math.min(...profitByOutreach.map(a => a.totalProfit));
+        %>
+        <% profitByOutreach.forEach(method => {
+          const percent = ((method.totalProfit / totalOutreachProfit) * 100).toFixed(1);
+          const cls = method.totalProfit === maxByOutreach 
+            ? "highlight-high" 
+            : method.totalProfit === minByOutreach
+              ? "highlight-low" 
+              : "";
+        %>
+          <li class="<%= cls %>">
+            <strong><%= method._id %></strong>: $<%= method.totalProfit %>
+            <span class="badge"><%= percent %>%</span>
+          </li>
+        <% }) %>
+      </ul>
+      <li class="summary">Total: $<%= totalOutreachProfit %></li>
+    </div>
+
+    <!-- Recent Jobs -->
+    <div class="card wide">
+      <h3>Recent Jobs</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Profit</th>
+            <th>Lead</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentJobs.forEach(job => { %>
+            <tr>
+              <td><%= job.agent %></td>
+              <td>$<%= job.profit %></td>
+              <td><%= job.lead %></td>
+              <td><%= new Date(job.timestamp).toLocaleString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</body>
+</html>
