@@ -70,6 +70,23 @@ connectDB();
 // Routes placeholder
 app.get("/", (req, res) => res.redirect("/login"));
 
+// Health check route
+app.get("/health", async (req, res) => {
+  try {
+    // Check DB connection state
+    const dbState = mongoose.connection.readyState;
+    // 1 = connected, 2 = connecting, 0 = disconnected, 3 = disconnecting
+
+    if (dbState === 1) {
+      res.status(200).json({ status: "ok", db: "connected" });
+    } else {
+      res.status(500).json({ status: "error", db: "not connected" });
+    }
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

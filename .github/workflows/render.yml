@@ -28,3 +28,19 @@ jobs:
             -H "Accept: application/json" \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
+
+      - name: Wait for production to become healthy
+        run: |
+          echo "Waiting for production service to be live..."
+          for i in {1..30}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://your-production-url.onrender.com/health || true)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "Production is live!"
+              exit 0
+            fi
+            echo "Not ready yet (status: $STATUS). Retrying in 10s..."
+            sleep 10
+          done
+          echo "Production did not become healthy in time."
+          exit 1
+
